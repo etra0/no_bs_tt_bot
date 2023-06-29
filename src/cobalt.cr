@@ -27,13 +27,16 @@ module NoBullshitBot
 
     # This will return a tempfile in order to be read by the Telegram Bot.
     # It's the job of the Caller to delete the tempfile.
-    def download_video(url : URI) : File
+    def download_video(url) : File
+      if url.is_a?(String)
+        url = URI.parse url
+      end
       request = {
         "url": url.to_s,
         "isNoTTWatermark": true
       }
 
-      response = @client.post("/api/json", body: request.to_json, headers: @headers)
+      response = HTTP::Client.post("https://co.wuk.sh/api/json", body: request.to_json, headers: @headers)
       response = JSON.parse(response.body)
       status = response["status"].as_s
       if status == "error" 
