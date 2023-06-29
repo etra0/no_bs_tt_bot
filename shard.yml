@@ -1,0 +1,19 @@
+name: no_bullshit_bot
+version: 0.1.0
+
+authors:
+  - Sebastián Aedo <me@etra0.lat>
+
+targets:
+  no_bullshit_bot:
+    main: src/main.cr
+
+dependencies:
+  tourmaline:
+    github: protoncr/tourmaline
+  dotenv:
+    github: gdotdesign/cr-dotenv
+
+crystal: 1.8.2
+
+license: MIT
