@@ -3,10 +3,11 @@ require "dotenv"
 require "../cobalt"
 
 module NoBullshitBot
-  Dotenv.load ".env"
+  if !ENV["BOT_TOKEN"]?
+    Dotenv.load ".env"
+  end
 
   def self.start_bot
-    puts ENV["BOT_TOKEN"]
     client = Tourmaline::Client.new(ENV["BOT_TOKEN"])
     api = NoBullshitBot::CobaltAPI.new
 
