@@ -12,10 +12,9 @@ module NoBullshitBot
     api = NoBullshitBot::CobaltAPI.new
 
     tiktok_handler = Tourmaline::HearsHandler.new(/^https:\/\/vm\.tiktok\.com/) do |ctx|
-      next if !ctx.message
-      next if !ctx.message.not_nil!.text
+      text = ctx.text(strip_command: false).to_s
+      next if text.empty?
 
-      text = ctx.message.not_nil!.text.to_s
       link = text.split(" ")[0]
       
       spawn do
