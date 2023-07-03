@@ -1,27 +1,13 @@
-# no_bullshit_bot
+# No Bullshit TT Bot
 
-TODO: Write a description here
+A bot that download tiktoks (supports tiktoks with only images).
 
-## Installation
+I got tired of the spam the ones available send.
 
-TODO: Write installation instructions here
+Using the neat [Cobalt
+API](https://github.com/wukko/cobalt/blob/current/docs/API.md)
 
 ## Usage
 
-TODO: Write usage instructions here
+Either set the BOT_TOKEN as an env variable or create an `.env` file.
 
-## Development
-
-TODO: Write development instructions here
-
-## Contributing
-
-1. Fork it (<https://github.com/your-github-user/no_bullshit_bot/fork>)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
-
-## Contributors
-
-- [Sebastián Aedo](https://github.com/your-github-user) - creator and maintainer
