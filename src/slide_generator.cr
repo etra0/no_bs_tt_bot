@@ -35,8 +35,25 @@ module NoBullshitBot
       return Slideshow.encode_video(files, audio)
     end
 
+    def self.get_duration(f : File)
+      buffer = IO::Memory.new
+      Process.run("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f.path], output: buffer)
+      return buffer.to_s.to_f
+    end
+
+    def self.shortest_media(video : File, audio : File) : Symbol
+      audio_dur = Slideshow.get_duration(audio)
+      video_dur = Slideshow.get_duration(video)
+
+      if audio_dur < video_dur
+        return :audio
+      end
+
+      return :video
+    end
+
     def self.encode_video(urls : Array(File), audio : File) : File
-      tf = File.tempfile(".mp4")
+      first_video_enc = File.tempfile(".mp4")
       args = Array(String).new
       urls.each { |u| args.concat(["-loop", "1", "-t", "3", "-i", u.path]) }
 
@@ -46,28 +63,36 @@ module NoBullshitBot
       last_out = "[img0]"
       filter = String.build do |str|
         # First we're going to rescale all images.
-        0.upto(urls.size() - 2) do |i|
+        0.upto(urls.size() - 1) do |i|
           str << "[#{i}]scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:-1:-1,setsar=1,format=yuv420p[img#{i}]; "
         end
-        1.upto(urls.size() - 2) do |i|
+
+        # Join all images doing a transition slideleft.
+        1.upto(urls.size() - 1) do |i|
           str << last_out
           str << "[img#{i}]xfade=transition=slideleft:duration=0.5:offset=#{(2.5 * i)}"
           last_out = "[f#{i - 1}]"
           str << last_out
-          str << "; "
+          str << ";"
         end
       end
       args << filter
-      args.concat ["-map", last_out, "-r", "25", "-pix_fmt", "yuv420p", "-c:v", "libx264", "-an", "-y", tf.path]
+      args.concat ["-map", last_out, "-r", "25", "-pix_fmt", "yuv420p", "-c:v", "libx264", "-an", "-y", first_video_enc.path]
       Process.run("ffmpeg", args, error: Process::Redirect::Inherit)
-      tf_final = File.tempfile(".mp4")
-      Process.run("ffmpeg", ["-i", tf.path, "-stream_loop", "-1", "-i", audio.path, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-shortest", "-y", tf_final.path], error: Process::Redirect::Inherit)
+
+      final_video = File.tempfile(".mp4")
+      case Slideshow.shortest_media(first_video_enc, audio)
+      when :audio
+        Process.run("ffmpeg", ["-i", first_video_enc.path, "-stream_loop", "-1", "-i", audio.path, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-shortest", "-y", final_video.path], error: Process::Redirect::Inherit)
+      when :video
+        Process.run("ffmpeg", ["-stream_loop", "-1", "-i", first_video_enc.path, "-i", audio.path, "-shortest", "-fflags", "shortest", "-max_interleave_delta", "100M", "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-y", final_video.path], error: Process::Redirect::Inherit)
+      end
 
       # Clean the other files.
       urls.each &.delete
       audio.delete
-      tf.delete
-      return tf_final
+      first_video_enc.delete
+      return final_video
     end
   end
 end
