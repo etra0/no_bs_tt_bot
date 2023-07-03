@@ -85,7 +85,7 @@ module NoBullshitBot
       when :audio
         Process.run("ffmpeg", ["-i", first_video_enc.path, "-stream_loop", "-1", "-i", audio.path, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-shortest", "-y", final_video.path], error: Process::Redirect::Inherit)
       when :video
-        Process.run("ffmpeg", ["-stream_loop", "-1", "-i", first_video_enc.path, "-i", audio.path, "-shortest", "-fflags", "shortest", "-max_interleave_delta", "100M", "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-y", final_video.path], error: Process::Redirect::Inherit)
+        Process.run("ffmpeg", ["-stream_loop", "-1", "-i", first_video_enc.path, "-i", audio.path, "-shortest", "-fflags", "shortest", "-max_interleave_delta", "100M", "-map", "0:v:0", "-map", "1:a:0", "-c:v", "libx264", "-y", final_video.path], error: Process::Redirect::Inherit)
       end
 
       # Clean the other files.
