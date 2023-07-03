@@ -1,6 +1,7 @@
 require "uri"
 require "http/client"
 require "json"
+require "./slide_generator"
 
 module NoBullshitBot
   class CobaltAPI
@@ -46,6 +47,9 @@ module NoBullshitBot
       case status
       when "stream"
         return self.handle_stream response["url"].as_s
+      when "picker"
+        slideshow = NoBullshitBot::Slideshow.new response
+        return slideshow.build_video
       else
         raise "Don't know how to handle this yet"
       end

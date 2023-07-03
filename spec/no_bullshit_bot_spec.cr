@@ -21,4 +21,11 @@ describe NoBullshitBot do
     2.times { ch.receive }
     true.should eq(true)
   end
+
+
+  it "Can build image sequence", tags: "sequence" do
+    api = NoBullshitBot::CobaltAPI.new
+    url = "https://vm.tiktok.com/ZM2acrr36/"
+    puts api.download_video(url).path
+  end
 end
