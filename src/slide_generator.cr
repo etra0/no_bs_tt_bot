@@ -76,7 +76,7 @@ module NoBullshitBot
           str << ";"
         end
       end
-      args << filter
+      args << filter.chomp(';')
       args.concat ["-map", last_out, "-r", "25", "-pix_fmt", "yuv420p", "-c:v", "libx264", "-an", "-y", first_video_enc.path]
       Process.run("ffmpeg", args, error: Process::Redirect::Inherit)
 
