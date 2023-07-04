@@ -28,7 +28,7 @@ module NoBullshitBot
 
     # This will return a tempfile in order to be read by the Telegram Bot.
     # It's the job of the Caller to delete the tempfile.
-    def download_video(url) : File
+    def download_video(url : (String | URI)) : File
       if url.is_a?(String)
         url = URI.parse url
       end
