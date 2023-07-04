@@ -11,7 +11,7 @@ module NoBullshitBot
     client = Tourmaline::Client.new(ENV["BOT_TOKEN"])
     api = NoBullshitBot::CobaltAPI.new
 
-    tiktok_handler = Tourmaline::HearsHandler.new(/^https:\/\/vm\.tiktok\.com/) do |ctx|
+    tiktok_handler = Tourmaline::HearsHandler.new(/^https:\/\/(vm|www)\.tiktok\.com/) do |ctx|
       text = ctx.text(strip_command: false).to_s
       next if text.empty?
 
