@@ -2,7 +2,7 @@ require "http"
 require "http/client"
 
 module NoBullshitBot
-  class Slideshow
+  struct Slideshow
     @images : Array(String)
     @audio : String
 
@@ -12,7 +12,6 @@ module NoBullshitBot
     end
 
     def build_video : File
-      tempfile = File.tempfile
       files = Array(File).new
 
       @images.each do |img|
@@ -54,6 +53,7 @@ module NoBullshitBot
 
     def self.encode_video(urls : Array(File), audio : File) : File
       first_video_enc = File.tempfile(".mp4")
+      first_video_enc.close
       args = Array(String).new
       urls.each { |u| args.concat(["-loop", "1", "-t", "3", "-i", u.path]) }
 
@@ -81,6 +81,7 @@ module NoBullshitBot
       Process.run("ffmpeg", args, error: Process::Redirect::Inherit)
 
       final_video = File.tempfile(".mp4")
+      final_video.close
       case Slideshow.shortest_media(first_video_enc, audio)
       when :audio
         Process.run("ffmpeg", ["-i", first_video_enc.path, "-stream_loop", "-1", "-i", audio.path, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-shortest", "-y", final_video.path], error: Process::Redirect::Inherit)

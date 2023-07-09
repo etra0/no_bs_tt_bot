@@ -37,7 +37,8 @@ module NoBullshitBot
         "isNoTTWatermark": true
       }
 
-      response = HTTP::Client.post("https://co.wuk.sh/api/json", body: request.to_json, headers: @headers)
+      client = HTTP::Client.new @base_url
+      response = client.post("/api/json", body: request.to_json, headers: @headers)
       response = JSON.parse(response.body)
       status = response["status"].as_s
       if status == "error" 
