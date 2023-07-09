@@ -11,7 +11,6 @@ module NoBullshitBot
     }
 
     def initialize(@base_url = "co.wuk.sh")
-      @client = HTTP::Client.new(@base_url, tls: true)
     end
 
     def handle_stream(inp) : File
@@ -37,7 +36,7 @@ module NoBullshitBot
         "isNoTTWatermark": true
       }
 
-      client = HTTP::Client.new @base_url
+      client = HTTP::Client.new @base_url, tls: true
       response = client.post("/api/json", body: request.to_json, headers: @headers)
       response = JSON.parse(response.body)
       status = response["status"].as_s
