@@ -20,7 +20,8 @@ module NoBullshitBot
       spawn do
         begin
           f = api.download_video link
-          ctx.reply_with_video f.path
+          ctx.reply_with_video File.open(f.path, "rb")
+          f.close
           f.delete
         rescue ex
           puts "Couldn't get the video: #{ex.message}"
