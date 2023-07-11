@@ -17,9 +17,7 @@ module NoBullshitBot
       puts "Downloading file..."
       file_handle = File.tempfile(".mp4") do |f|
         HTTP::Client.get(inp) do |response|
-        # TODO: Search for a better way to make a buffered copy.
-          while IO.copy(response.body_io, f, 1024 * 1024) != 0
-          end
+          IO.copy(response.body_io, f)
         end
       end
       return file_handle

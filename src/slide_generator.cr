@@ -17,8 +17,7 @@ module NoBullshitBot
       @images.each do |img|
         tf = File.tempfile(".jpg") do |f|
           HTTP::Client.get img do |response|
-            while IO.copy(response.body_io, f, 1024 * 1024) != 0
-            end
+            IO.copy(response.body_io, f)
           end
         end
         files << tf
@@ -26,8 +25,7 @@ module NoBullshitBot
 
       audio = File.tempfile(".mp3") do |f|
         HTTP::Client.get @audio do |response|
-          while IO.copy(response.body_io, f, 1024 * 1024) != 0
-          end
+          IO.copy(response.body_io, f)
         end
       end
 
