@@ -57,16 +57,16 @@ module NoBullshitBot
 
       args.concat ["-stream_loop", "-1", "-i", audio.path]
       args << "-filter_complex"
-      
+
       last_out = "[img0]"
       filter = String.build do |str|
         # First we're going to rescale all images.
-        0.upto(urls.size() - 1) do |i|
+        0.upto(urls.size - 1) do |i|
           str << "[#{i}]scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:-1:-1,setsar=1,format=yuv420p[img#{i}]; "
         end
 
         # Join all images doing a transition slideleft.
-        1.upto(urls.size() - 1) do |i|
+        1.upto(urls.size - 1) do |i|
           str << last_out
           str << "[img#{i}]xfade=transition=slideleft:duration=0.5:offset=#{(2.5 * i)}"
           last_out = "[f#{i - 1}]"

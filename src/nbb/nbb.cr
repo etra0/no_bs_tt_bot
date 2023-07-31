@@ -16,7 +16,7 @@ module NoBullshitBot
       next if text.empty?
 
       link = text.split(" ")[0]
-      
+
       spawn do
         begin
           f = api.download_video link
